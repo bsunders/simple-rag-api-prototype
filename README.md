@@ -130,23 +130,40 @@ RAG_API_Skeleton/
 ## Key Design Decisions & Trade-Offs
 
 ### In-memory index vs. external store
-    For simplicity and given the small FAQ corpus, everything (chunks, embeddings, and filenames) is kept in memory. This keeps the implementation lightweight and avoids introducing a dependency on a separate vector store. It would need to be revisited for larger corpora or multi-tenant scenarios.
+    For simplicity and given the small FAQ corpus, everything (chunks, embeddings, 
+    and filenames) is kept in memory. This keeps the implementation lightweight and 
+    avoids introducing a dependency on a separate vector store. It would need to be 
+    revisited for larger corpora or multi-tenant scenarios.
 
 ### Single-pass embedding vs. batching/streaming
-    All chunk embeddings are created in a single embeddings call at startup. This is acceptable for a small set of FAQ documents; for larger datasets, this would be refactored into batched calls or an offline pre-processing step.
+    All chunk embeddings are created in a single embeddings call at startup. This is 
+    acceptable for a small set of FAQ documents; for larger datasets, this would be 
+    refactored into batched calls or an offline pre-processing step.
 
 ### Cosine similarity via dot product
-    Instead of implementing cosine similarity explicitly, embeddings are L2-normalized once and a simple dot product is used. This keeps retrieval fast and mathematically equivalent for ranking purposes.
+    Instead of implementing cosine similarity explicitly, embeddings are L2-normalized 
+    once and a simple dot product is used. This keeps retrieval fast and mathematically 
+    equivalent for ranking purposes.
 
 ### Simple, constrained schema and responses
-    The API always returns deterministic JSON with two fields: "answer" and "sources". This matches the task spec and makes the contract easy to consume (e.g., by curl or Postman) without extra metadata.
+    The API always returns deterministic JSON with two fields: "answer" and "sources". 
+    This matches the task spec and makes the contract easy to consume (e.g., by curl 
+    or Postman) without extra metadata.
 
 ### Fail-fast configuration and initialization
-    The service validates OPENAI_API_KEY and the presence of FAQ content at startup. If misconfigured or if no documents are available, it fails immediately rather than serving placeholder or potentially misleading responses. This favors correctness over availability, which is appropriate for a small, local prototype.
+    The service validates OPENAI_API_KEY and the presence of FAQ content at startup. 
+    If misconfigured or if no documents are available, it fails immediately rather than 
+    serving placeholder or potentially misleading responses. This favors correctness 
+    over availability, which is appropriate for a small, local prototype.
 
 ### LLM prompting kept intentionally minimal
-    The prompts are deliberately short and conservative. They focus on grounding in context and avoiding hallucinations, rather than stylistic richness. For a more advanced system, we could add explicit citation formatting and more structured outputs, but that felt beyond the scope of this exercise.
+    The prompts are deliberately short and conservative. They focus on grounding in 
+    context and avoiding hallucinations, rather than stylistic richness. For a more 
+    advanced system, we could add explicit citation formatting and more structured 
+    outputs, but that felt beyond the scope of this exercise.
 
 ### Testability
-    A RAG_TEST_MODE environment flag is provided to optionally skip preload in automated tests, allowing tests to construct small in-memory corpora without incurring API calls or file I/O on import.
+    A RAG_TEST_MODE environment flag is provided to optionally skip preload in 
+    automated tests, allowing tests to construct small in-memory corpora without 
+    incurring API calls or file I/O on import.
 
