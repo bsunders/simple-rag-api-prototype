@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple
 from pathlib import Path
 
 import numpy as np
-from tqdm import tqdm
+#from tqdm import tqdm
 from openai import OpenAI
 
 # --- Config ---
