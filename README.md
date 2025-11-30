@@ -2,16 +2,14 @@
 
 
 ### Layman’s Explanation of What the RAG System Does
-    This system works by breaking all the FAQ documents into small pieces and converting 
-    each piece into a numerical “fingerprint” that captures its meaning. 
-    When a user asks a question, the system turns the question into its own 
-    fingerprint and compares it to the fingerprints of all the document chunks 
-    to see which ones are most similar in meaning — not by matching keywords, 
-    but by finding which pieces are talking about the same ideas. 
-    It then takes the most relevant pieces, sends them to an AI model along with the question, 
-    and asks the model to write an answer only using that provided information. 
-    The final result is an answer grounded in the original FAQ documents, 
-     along with the filenames of the documents the answer came from.
+    This system works by breaking all the FAQ documents into small pieces and converting each piece into a 
+    numerical “fingerprint” that captures its meaning. When a user asks a question, the system turns the 
+    question into its own fingerprint and compares it to the fingerprints of all the document chunks to see
+    which ones are most similar in meaning — not by matching keywords, but by finding which pieces are 
+    talking about the same ideas. It then takes the most relevant pieces, sends them to an AI model along 
+    with the question, and asks the model to write an answer only using that provided information. The 
+    final result is an answer grounded in the original FAQ documents, along with the filenames of the 
+    documents the answer came from.
 
 
 This RAG (Retrieval-Augmented Generation) system has been built with the following functionality:
