@@ -1,15 +1,12 @@
-# Simple RAG Prototype README
+# Simple RAG Prototype
 
-
-### Layman’s Explanation of What the RAG System Does
-    This system works by breaking all the FAQ documents into small pieces and converting each piece into a 
-    numerical “fingerprint” that captures its meaning. When a user asks a question, the system turns the 
-    question into its own fingerprint and compares it to the fingerprints of all the document chunks to see
-    which ones are most similar in meaning — not by matching keywords, but by finding which pieces are 
-    talking about the same ideas. It then takes the most relevant pieces, sends them to an AI model along 
-    with the question, and asks the model to write an answer only using that provided information. The 
-    final result is an answer grounded in the original FAQ documents, along with the filenames of the 
-    documents the answer came from.
+This is a **Retrieval-Augmented Generation (RAG) system** that intelligently answers questions 
+using a knowledge base of FAQ documents. The system converts documents and questions into semantic 
+embeddings, finds the most relevant content using vector similarity search, and generates accurate 
+answers grounded in the source material using OpenAI's GPT models. Built with Python, FastAPI, and 
+OpenAI APIs, it provides a simple HTTP API that can be queried locally via curl or Postman. Rather 
+than hallucinating responses, the system only answers based on information found in the provided 
+FAQ documents, making it reliable for knowledge-based question answering.
 
 
 This RAG (Retrieval-Augmented Generation) system has been built with the following functionality:
