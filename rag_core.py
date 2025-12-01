@@ -165,10 +165,8 @@ def ask_faq_core(question: str, top_k: int = TOP_K_DEFAULT) -> Dict[str, object]
     if top_k <= 0:
         top_k = TOP_K_DEFAULT
 
-    # If not yet implemented, return a safe placeholder so wrappers run.
     if not _READY or _CHUNK_EMBEDS is None or len(_CHUNKS) == 0:
         raise RuntimeError("RAG system is not initialized or no FAQ documents are loaded.")
-
 
     q_emb = _embed_query(q)
 
@@ -181,6 +179,7 @@ def ask_faq_core(question: str, top_k: int = TOP_K_DEFAULT) -> Dict[str, object]
     answer = _generate_answer(context, q)
     distinct_sources = sorted(list({f for f in top_files}))
     sources_out = distinct_sources[:2] if len(distinct_sources) >= 2 else distinct_sources
+    
     return {"answer": answer, "sources": sources_out}
 
 # ---------------- Module preload ----------------
