@@ -29,18 +29,12 @@ if not api_key or api_key == "your-actual-api-key-here":
     exit(1)
 
 print(f"✅ API key configured (starts with: {api_key[:10]}...)")
-
 print(f"📁 FAQ Directory: {os.getenv('FAQ_DIR', 'faqs')}")
 print(f"🤖 LLM Model: {os.getenv('LLM_MODEL', 'gpt-3.5-turbo')}")
 print(f"🔍 Embedding Model: {os.getenv('EMBED_MODEL', 'text-embedding-ada-002')}")
 
 # Start the server
 if __name__ == "__main__":
-    print("🎯 To enable Datadog auto-instrumentation, use:")
-    print("   ddtrace-run python run_server.py")
-    print("   OR")
-    print("   ddtrace-run uvicorn api_server:app --host 0.0.0.0 --port 8000 --reload")
-    print("-------------------------------------------------")
     
     import uvicorn
     uvicorn.run("api_server:app", host="0.0.0.0", port=8000, reload=True)
