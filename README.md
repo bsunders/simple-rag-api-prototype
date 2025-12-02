@@ -1,172 +1,195 @@
+
 # Simple RAG Prototype
 
-This is a **Retrieval-Augmented Generation (RAG) system** that intelligently answers questions 
-using a knowledge base of FAQ documents. The system converts documents and questions into semantic 
-embeddings, finds the most relevant content using vector similarity search, and generates accurate 
-answers grounded in the source material using OpenAI's GPT models. Built with Python, FastAPI, and 
-OpenAI APIs, it provides a simple HTTP API that can be queried locally via curl or Postman. Rather 
-than hallucinating responses, the system only answers based on information found in the provided 
-FAQ documents, making it reliable for knowledge-based question answering.
+A lightweight Retrieval-Augmented Generation (RAG) API built with **Python**, **FastAPI**, and **OpenAI**.
+It loads FAQ documents, embeds them for semantic search, retrieves the most relevant content, and generates grounded answers—avoiding hallucinations by ensuring responses come *only* from the provided documents.
 
+This prototype exposes a simple HTTP API suitable for local testing, demos, or extending into a more robust RAG service.
 
-This RAG (Retrieval-Augmented Generation) system has been built with the following functionality:
+---
 
-### Core Features Implemented
-- ✅ **Text chunking**: Splits FAQ documents into ~200 character chunks with word boundaries
-- ✅ **Document loading**: Loads all `.md` files from the `faqs/` directory  
-- ✅ **Vector embeddings**: Uses OpenAI's `text-embedding-ada-002` for semantic search
-- ✅ **Cosine similarity**: L2-normalized embeddings for efficient similarity search
-- ✅ **LLM answer generation**: Uses GPT-3.5-turbo with proper prompting and citations
-- ✅ **HTTP API**: FastAPI server with required endpoints and validation
+## 🚀 Features
 
-### API Endpoints
-- `GET /health` → Returns `{"status": "ok"}`
-- `POST /ask` → Accepts `{"question": "string", "top_k": number}` and returns `{"answer": "string", "sources": ["file1.md", "file2.md"]}`
+### **Core Functionality**
 
-### Configuration
-All settings are configurable via environment variables:
-- `OPENAI_API_KEY` (required)
-- `FAQ_DIR` (default: `faqs/`)
-- `EMBED_MODEL` (default: `text-embedding-ada-002`)
-- `LLM_MODEL` (default: `gpt-3.5-turbo`)
-- `CHUNK_SIZE` (default: `200`)
-- `TOP_K_DEFAULT` (default: `4`)
+* **Text chunking** — Splits FAQ files into ~200-character, word-aligned chunks
+* **Document ingestion** — Loads all `.md` files from the `faqs/` directory
+* **Vector embeddings** — Uses `text-embedding-ada-002` for semantic search
+* **Similarity search** — Fast cosine similarity via L2-normalized embeddings
+* **LLM answer generation** — Uses GPT-3.5-turbo with citations
+* **FastAPI HTTP API** — Typed request/response validation + health checks
 
+### **Endpoints**
 
-## 🚀 How to Run
+| Method | Path      | Description                                         |
+| ------ | --------- | --------------------------------------------------- |
+| GET    | `/health` | Service health indicator                            |
+| POST   | `/ask`    | Ask a question; returns answer + cited source files |
 
-### 1. Set up environment
+Example request:
+
+```json
+{
+  "question": "How do I reset my password?",
+  "top_k": 4
+}
+```
+
+---
+
+## ⚙️ Configuration
+
+All settings are controlled through environment variables:
+
+| Variable         | Default                  | Description                        |
+| ---------------- | ------------------------ | ---------------------------------- |
+| `OPENAI_API_KEY` | —                        | **Required**                       |
+| `FAQ_DIR`        | `faqs/`                  | Directory containing FAQ documents |
+| `EMBED_MODEL`    | `text-embedding-ada-002` | Embedding model                    |
+| `LLM_MODEL`      | `gpt-3.5-turbo`          | LLM for answer generation          |
+| `CHUNK_SIZE`     | `200`                    | Chunk size in characters           |
+| `TOP_K_DEFAULT`  | `4`                      | Default number of retrieved chunks |
+| `RAG_TEST_MODE`  | `false`                  | Skips preload for tests            |
+
+---
+
+## 🛠️ Installation & Running
+
+### **1. Set up a virtual environment**
+
 ```bash
-cd RAG_API_Skeleton
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Configure environment variables
-Create a `.env` file with your OpenAI API key:
+### **2. Add environment variables**
+
+Create `.env`:
+
 ```bash
-echo "OPENAI_API_KEY=your-actual-api-key-here" > .env
+echo "OPENAI_API_KEY=your-api-key" > .env
 ```
 
-### 3. Start the HTTP API server
+### **3. Start the API server**
 
 ```bash
 python run_server.py
 ```
-This script will:
-- Load environment variables from `.env` file
-- Validate your OpenAI API key is configured
-- Display current configuration
-- Start the server automatically
 
+This will:
 
+* Load `.env`
+* Validate your OpenAI key
+* Load and embed FAQ documents
+* Start FastAPI on `http://localhost:8000`
 
-### 4. Test the API endpoints
+---
 
-**Health check:**
+## 🧪 Testing the API
+
+### Health check
+
 ```bash
 curl http://localhost:8000/health
 ```
 
-**Ask a question:**
+### Ask a question
+
 ```bash
 curl -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -d '{"question": "How do I reset my password?"}'
 ```
 
-**Ask with custom top_k:**
+### Custom `top_k`
+
 ```bash
 curl -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -d '{"question": "What is the PTO policy?", "top_k": 2}'
 ```
 
-## 📁 File Structure
+---
+
+## 📁 Project Structure
+
 ```
 simple-rag-api-prototype/
-├── faqs/                    # FAQ documents (copied from parent dir)
-│   ├── faq_auth.md         # Authentication FAQ
-│   ├── faq_employee.md     # Employee handbook  
-│   └── faq_sso.md          # SSO FAQ
-├── api_server.py           # FastAPI HTTP server
-├── rag_core.py             # Core RAG implementation
-├── run_server.py           # Server runner with env validation
-├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables (create this)
-└── venv/                   # Virtual environment (create this)
+├── faqs/                 # FAQ markdown documents
+├── api_server.py         # FastAPI HTTP server
+├── rag_core.py           # Core RAG logic (chunking, embeddings, retrieval)
+├── run_server.py         # Startup wrapper + env validation
+├── requirements.txt
+└── .env                  # Environment variables (not committed)
 ```
+
+---
 
 ## 🔧 Implementation Details
 
-### Text Processing
-- Chunks text at word boundaries to maintain readability
-- Handles empty documents gracefully
-- Preserves source file mapping for citations
+### **Text Processing**
 
-### Vector Search
-- Uses OpenAI embeddings API with batching
-- L2-normalizes embeddings for cosine similarity via dot product
-- Retrieves top-k most similar chunks
+* Chunks on word boundaries for readability
+* Tracks chunk-to-file mapping for citation output
+* Gracefully handles empty or missing docs
 
-### Answer Generation
-- System prompt ensures answers stay within provided context
-- Temperature=0 for deterministic responses
-- Includes source file citations
-- Handles API errors gracefully
+### **Embedding & Search**
 
-### Error Handling
-- Validates input (non-empty questions, reasonable top_k)
-- Proper HTTP status codes (200, 400, 500)
-- Fails fast on missing API key
-- Graceful fallbacks for missing documents
+* Embeddings generated once at startup (in-memory index)
+* L2-normalized vectors enable cosine similarity via dot product
+* Retrieves top-k most semantically similar chunks
 
-## 🧪 Sample Questions to Test
-- "How do I reset my password?"
-- "What is the unlimited PTO policy?"
-- "How do I enable SSO?"
-- "What is the equity vesting schedule?"
+### **LLM Answer Generation**
 
+* Strict system prompt prevents hallucination
+* `temperature=0` ensures determinism
+* Returns both the answer and list of source files
 
+### **Error Handling**
 
-## Key Design Decisions & Trade-Offs
+* Validates questions and top-k values
+* Proper HTTP status codes (400/500)
+* Fails fast if API key or FAQ directory is missing
 
-### In-memory index vs. external store
-    For simplicity and given the small FAQ corpus, everything (chunks, embeddings, 
-    and filenames) is kept in memory. This keeps the implementation lightweight and 
-    avoids introducing a dependency on a separate vector store. It would need to be 
-    revisited for larger corpora or multi-tenant scenarios.
+---
 
-### Single-pass embedding vs. batching/streaming
-    All chunk embeddings are created in a single embeddings call at startup. This is 
-    acceptable for a small set of FAQ documents; for larger datasets, this would be 
-    refactored into batched calls or an offline pre-processing step.
+## 🧪 Sample Prompts
 
-### Cosine similarity via dot product
-    Instead of implementing cosine similarity explicitly, embeddings are L2-normalized 
-    once and a simple dot product is used. This keeps retrieval fast and mathematically 
-    equivalent for ranking purposes.
+Try questions like:
 
-### Simple, constrained schema and responses
-    The API always returns deterministic JSON with two fields: "answer" and "sources". 
-    This matches the task spec and makes the contract easy to consume (e.g., by curl 
-    or Postman) without extra metadata.
+* "How do I reset my password?"
+* "What is the unlimited PTO policy?"
+* "How do I enable SSO?"
+* "What is the equity vesting schedule?"
 
-### Fail-fast configuration and initialization
-    The service validates OPENAI_API_KEY and the presence of FAQ content at startup. 
-    If misconfigured or if no documents are available, it fails immediately rather than 
-    serving placeholder or potentially misleading responses. This favors correctness 
-    over availability, which is appropriate for a small, local prototype.
+---
 
-### LLM prompting kept intentionally minimal
-    The prompts are deliberately short and conservative. They focus on grounding in 
-    context and avoiding hallucinations, rather than stylistic richness. For a more 
-    advanced system, we could add explicit citation formatting and more structured 
-    outputs, but that felt beyond the scope of this exercise.
+## 🧠 Design Decisions & Trade-offs
 
-### Testability
-    A RAG_TEST_MODE environment flag is provided to optionally skip preload in 
-    automated tests, allowing tests to construct small in-memory corpora without 
-    incurring API calls or file I/O on import.
+* **In-memory index** keeps the system simple; suitable for small corpora
+* **Single-pass embedding** at startup avoids repeated API calls
+* **Minimal prompting** focuses on accuracy over style
+* **Fail-fast startup** avoids serving incomplete/misleading answers
+* **Optional test mode** supports fast unit testing without API calls
 
+---
+
+## 📌 Future Improvements (Optional Enhancements)
+
+If you want, you could add a section like this to make the project feel more forward-looking.
+
+Potential next steps:
+
+* Swap in a real vector DB (e.g., Chroma, Weaviate, Pinecone)
+* Support PDF ingestion
+* Add citation highlighting or snippet extraction
+* Add async embedding generation with concurrency
+* Allow streaming answers
+* Add Dockerfile + Compose setup
+
+---
+
+## About
+
+A simple, extensible RAG API prototype demonstrating retrieval, semantic search, and grounded LLM answering using FastAPI and OpenAI.
