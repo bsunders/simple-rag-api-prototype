@@ -1,6 +1,13 @@
 
 # Simple RAG Prototype
 
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-API-black?logo=openai)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Prototype-orange)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?logo=github)
+
 A lightweight Retrieval-Augmented Generation (RAG) API built with **Python**, **FastAPI**, and **OpenAI**.
 It loads FAQ documents, embeds them for semantic search, retrieves the most relevant content, and generates grounded answers—avoiding hallucinations by ensuring responses come *only* from the provided documents.
 
