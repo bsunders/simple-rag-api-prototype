@@ -181,6 +181,7 @@ If you want, you could add a section like this to make the project feel more for
 
 Potential next steps:
 
+* Add in Datadog LLM observability
 * Swap in a real vector DB (e.g., Chroma, Weaviate, Pinecone)
 * Support PDF ingestion
 * Add citation highlighting or snippet extraction
