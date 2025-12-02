@@ -85,7 +85,7 @@ curl -X POST http://localhost:8000/ask \
 
 ## 📁 File Structure
 ```
-RAG_API_Skeleton/
+simple-rag-api-prototype/
 ├── faqs/                    # FAQ documents (copied from parent dir)
 │   ├── faq_auth.md         # Authentication FAQ
 │   ├── faq_employee.md     # Employee handbook  
